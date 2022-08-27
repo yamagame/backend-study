@@ -1,0 +1,33 @@
+swagger: "2.0"
+info:
+  title: Hello World API
+  description: say Hello World!
+  version: 1.0.0
+host: 127.0.0.1:3000
+schemes:
+  - "http"
+paths:
+  /hello:
+    get:
+      description: "response Hello World message."
+      responses:
+        200:
+          description: "Success."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Hello World
+  /test:
+    get:
+      description: "response Test World message."
+      responses:
+        200:
+          description: "Success."
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Test World
