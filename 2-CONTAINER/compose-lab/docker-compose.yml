@@ -1,0 +1,13 @@
+services:
+  web:
+    build: ./web
+    ports:
+      - "4000:3000"
+  app:
+    build: ./app
+    ports:
+      - "3000:3000"
+    environment:
+     - MESSAGE=hello from docker compose 
+    depends_on:
+      - web
