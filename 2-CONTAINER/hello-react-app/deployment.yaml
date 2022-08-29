@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-react-app
+  labels:
+    app: hello-react-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-react-app
+  template:
+    metadata:
+      labels:
+        app: hello-react-app
+    spec:
+      containers:
+      - name: hello-react-app
+        image: hello-react-app:minikube
+        ports:
+        - containerPort: 8080

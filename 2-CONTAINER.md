@@ -510,9 +510,12 @@ $ curl http://localhost:3000/hello
 
 # Kubernetes
 
-[Kubernetesとは何か？](https://kubernetes.io/ja/docs/concepts/overview/what-is-kubernetes/)
+- [Kubernetesとは何か？](https://kubernetes.io/ja/docs/concepts/overview/what-is-kubernetes/)
+- [Kubernetesドキュメント](https://kubernetes.io/ja/docs/home/)
+- [Cloud Native Computing Foundation](https://www.cncf.io/)
+- [ラズパイ4で作るディスプレイ付きKubernetesクラスター](https://qiita.com/reireias/items/0d87de18f43f27a8ed9b)
 
-## Hello アプリを minikube クラスターで稼働させる。
+## Hello アプリを minikube クラスターで稼働させる
 
 [Hello World アプリをデプロイする](https://kubernetes.io/ja/docs/tasks/access-application-cluster/ingress-minikube/)
 
@@ -563,6 +566,7 @@ CTL+C で停止し、サービスを削除する。
 
 ```bash
 $ kubectl delete service hello
+$ kubectl delete deployment hello
 ```
 
 ingress アドオンを有効化する。
@@ -592,15 +596,48 @@ $ minikube delete
 
 ## Kubernetesの基本モジュール
 
-[Kubernetesの基本モジュール](https://kubernetes.io/ja/docs/tutorials/kubernetes-basics/)
+- [Kubernetesの基本モジュール](https://kubernetes.io/ja/docs/tutorials/kubernetes-basics/)
 
-- クラスター
-- マスター
-- ノード
-- コントロールプレーン
-- デプロイメント
-- ポッド
-- サービス
+1. [Kubernetesクラスターの作成](https://kubernetes.io/ja/docs/tutorials/kubernetes-basics/create-cluster/cluster-intro/)
+2. [アプリケーションのデプロイ](https://kubernetes.io/ja/docs/tutorials/kubernetes-basics/deploy-app/deploy-intro/)
+3. [デプロイしたアプリケーションの探索](https://kubernetes.io/ja/docs/tutorials/kubernetes-basics/explore/explore-intro/)
+4. [アプリケーションの公開](https://kubernetes.io/ja/docs/tutorials/kubernetes-basics/expose/expose-intro/)
+5. [アプリケーションのスケールアップ](https://kubernetes.io/ja/docs/tutorials/kubernetes-basics/scale/scale-intro/)
+6. [アプリケーションのアップデート](https://kubernetes.io/ja/docs/tutorials/kubernetes-basics/update/update-intro/)
+
+## 用語
+
+- [クラスター](https://kubernetes.io/ja/docs/concepts/overview/components/)
+
+  コンテナ化されたアプリケーションを実行する、ノードと呼ばれるワーカーマシンの集合。
+
+- [ノード](https://kubernetes.io/ja/docs/concepts/architecture/nodes/)
+
+  ノードは一台のVMまたは物理的なマシン。ノード上で Docker が稼働し複数のコンテナが動作する。
+
+- [マスター](https://kubernetes.io/ja/docs/concepts/#kubernetes%E3%83%9E%E3%82%B9%E3%82%BF%E3%83%BC)
+
+  クラスタを制御することができるノードのこと。kubectl コマンドはマスターと通信してクラスタを制御する。
+
+- [コントロールプレーン](https://kubernetes.io/ja/docs/concepts/#kubernetes%E3%83%9E%E3%82%B9%E3%82%BF%E3%83%BC)
+
+  クラスタを制御するさまざまなパーツのこと。
+
+- [デプロイメント](https://kubernetes.io/ja/docs/tutorials/kubernetes-basics/deploy-app/deploy-intro/)
+
+  クラスタ内のアプリケーションを実行し監視する。
+
+- [ポッド](https://kubernetes.io/ja/docs/concepts/workloads/pods/)
+  
+  Kubernetes内で作成・管理できる、1つまたは複数のコンテナのグループ。論理的な一つのホストで動作する。Pod はクジラの群れやえんどう豆のさやのイメージ。
+
+- [サービス](https://kubernetes.io/ja/docs/tutorials/services/source-ip/)
+
+  Kubernetesクラスター内で実行されているアプリケーションはサービスを経由して、他のアプリケーションや外の世界との発見や通信を行う。
+
+- [Ingress](https://kubernetes.io/ja/docs/concepts/services-networking/ingress/)
+
+  クラスター内のServiceに対する外部からのアクセス(主にHTTP)を管理するAPIオブジェクト。ingress は入場口という意味。
 
 ## LoadBalancer と NodePort の違い
 
@@ -653,9 +690,68 @@ spec:
         - containerPort: 8080
 ```
 
+Deployment を作成する。
+
 ```bash
-kubectl apply -f hello-deployment.yaml
+$ kubectl apply -f hello-deployment.yaml
+deployment.apps/hello created
 ```
+
+Pod が 3 つ立ち上がってることを確認する。
+
+```bash
+$ kubectl get pods                      
+NAME                     READY   STATUS    RESTARTS   AGE
+hello-6f9979d699-2fkzz   1/1     Running   0          21s
+hello-6f9979d699-dn59r   1/1     Running   0          21s
+hello-6f9979d699-gj98l   1/1     Running   0          21s
+```
+
+サービスを稼働させる。
+
+```bash
+$ kubectl expose deployment hello --type=LoadBalancer --port=8080
+```
+
+ホスト側のポートを変更したいときは --target-port オプションを使用する。
+
+```bash
+$ kubectl expose deployment hello --type=LoadBalancer --port=4000 --target-port=8080
+```
+
+サービスの稼働を確認する。
+
+```bash
+$ kubectl get service
+NAME         TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+hello        LoadBalancer   10.109.112.225   127.0.0.1     8080:31606/TCP   2m16s
+kubernetes   ClusterIP      10.96.0.1        <none>        443/TCP          14h
+```
+
+トンネルを起動してブラウザで接続する。
+
+```bash
+$ minikube tunnel
+```
+
+curl コマンドで http://localhost:8080 をリクエストして確認する。
+
+```bash
+$ curl http://127.0.0.1:8080
+Hello, world!
+Version: 1.0.0
+Hostname: hello-6f9979d699-2fkzz
+$ curl http://127.0.0.1:8080
+Hello, world!
+Version: 1.0.0
+Hostname: hello-6f9979d699-gj98l
+$ curl http://127.0.0.1:8080
+Hello, world!
+Version: 1.0.0
+Hostname: hello-6f9979d699-dn59r
+```
+
+ブラウザを使って http://127.0.0.1:8080/ を開きアプリの動作を確認する。
 
 参考：[Kubernetes API](https://kubernetes.io/docs/reference/kubernetes-api/)
 
@@ -663,32 +759,53 @@ kubectl apply -f hello-deployment.yaml
 
 [Kubernetes 入門 - 自作の Docker イメージを minikube で動かす方法](https://tech.andpad.co.jp/entry/2021/02/18/170000)
 
-一時的に docker の向き先を minikube に変更する
+一時的に docker の向き先を minikube に変更する。
 
 ```bash
 eval $(minikube -p minikube docker-env)
 ```
 
-Dockerfile を作成する
-
-```text
-FROM node:16-alpine
-WORKDIR /app
-
-COPY package*.json ./
-RUN yarn install
-
-COPY . .
-RUN yarn run build
-
-ENV HOST 0.0.0.0
-EXPOSE 3000
-
-CMD ["yarn", "run", "start"]
-```
-
+hello-react-app をビルドする。
 ビルドしたイメージは minikube 内の Docker に保存される。
 
 ```bash
-docker build -t sample-react-app:minikube .
+docker build -t hello-react-app:minikube .
+```
+
+Deployment を作成。
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-react-app
+  labels:
+    app: hello-react-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-react-app
+  template:
+    metadata:
+      labels:
+        app: hello-react-app
+    spec:
+      containers:
+      - name: hello-react-app
+        image: hello-react-app:minikube
+        ports:
+        - containerPort: 8080
+```
+
+8080 ポートで接続できるようサービスを作成する。
+
+```bash
+$ kubectl expose deployment hello-react-app --type=LoadBalancer --port=8080
+```
+
+トンネルを起動してブラウザで接続する。
+
+```bash
+$ minikube tunnel
 ```
