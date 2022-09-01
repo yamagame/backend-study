@@ -123,10 +123,10 @@ graph LR;
 
 ## HTTPリクエストを利用した通信技術
 
-- REST API (RESTful API)
-- RPC (JSON-RPC)
+- [REST](https://aws.amazon.com/jp/what-is/restful-api/)
+- RPC ([gRPC](https://grpc.io/))
 - [SOAP](https://www.redhat.com/ja/topics/integration/whats-the-difference-between-soap-rest)
-- JSONP
+- [JSONP](https://ja.wikipedia.org/wiki/JSONP)
 - [GraphQL](https://graphql.org/)
 
 参考：[SOAP と REST の違いは何ですか？](https://www.xlsoft.com/jp/blog/blog/2021/06/23/smartbear-19976/)
@@ -158,6 +158,19 @@ https://user:password@www.example.com:123/forum/questions/?tag=networking&order=
 - [Referer](https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/Referer)
 - [User-Agent](https://developer.mozilla.org/ja/docs/Web/HTTP/Headers/User-Agent)
 
+## HTTP/2
+
+少しでもネットワークの負荷を減らしたい思惑で、HTTPにストリームの仕組みを取り入れたもの。
+
+- [普及が進む「HTTP/2」の仕組みとメリットとは](https://knowledge.sakura.ad.jp/7734/)
+
+## HTTP/3
+
+ベースは Google が開発した QUIC。HTTP/2の問題を解決するためにUDPベースで開発されたもの。
+
+- [Wikipedia HTTP/3](https://ja.wikipedia.org/wiki/HTTP/3)
+- [HTTP/2のTCPレベルのHoLブロッキングとQUIC](https://dorapon2000.hatenablog.com/entry/2021/04/11/180740)
+
 # OpenAPI
 ## サンプルREST API
 
@@ -167,7 +180,9 @@ https://user:password@www.example.com:123/forum/questions/?tag=networking&order=
   curl https://zipcloud.ibsnet.co.jp/api/search?zipcode=7830060
   ```
 
-参考：[郵便局：郵便番号データ](https://www.post.japanpost.jp/zipcode/dl/readme.html)
+  参考：[郵便局：郵便番号データ](https://www.post.japanpost.jp/zipcode/dl/readme.html)
+
+- [GitHub REST API](https://docs.github.com/ja/rest)
 
 ## OpenAPI (Swagger)
 
@@ -252,6 +267,76 @@ paths:
                 type: string
                 example: Hello World
 ```
+
+# WebSocket
+
+- [WebSocket](https://developer.mozilla.org/ja/docs/Web/API/WebSockets_API)
+
+## サンプルコード
+
+```typescript
+// サーバー側
+import { Server } from "ws";
+const PORT = Number(process.env.PORT || 4000);
+const ws = new Server({ port: PORT });
+
+ws.on("connection", (client) => {
+  client.on("message", (message) => {
+    console.log("Received: " + message);
+    client.send(message.toString() + " from server");
+  });
+});
+```
+
+```html
+<!-- クライアント側 -->
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button id="btn">Hello</button>
+    <input type="text" id="hello-text" />
+
+    <script>
+      const sock = new WebSocket("ws://127.0.0.1:4000");
+
+      const text = document.getElementById("hello-text");
+      let hello = "Hello!";
+      text.value = hello;
+      text.addEventListener("change", function (e) {
+        hello = e.target.value;
+      });
+
+      sock.addEventListener("open", (e) => {
+        console.log("接続が開かれたときに呼び出されるイベント");
+      });
+
+      sock.addEventListener("message", (e) => {
+        console.log("サーバーからメッセージを受信したときに呼び出されるイベント : " + e.data);
+      });
+
+      sock.addEventListener("close", (e) => {
+        console.log("接続が閉じられたときに呼び出されるイベント");
+      });
+
+      sock.addEventListener("error", (e) => {
+        console.log("エラーが発生したときに呼び出されるイベント");
+      });
+
+      btn.addEventListener("click", (e) => {
+        sock.send(hello);
+      });
+    </script>
+  </body>
+</html>
+```
+
+参考:[WebSocket(ブラウザAPI)とws(Node.js) の基本、自分用のまとめ](https://qiita.com/okumurakengo/items/c497fba7f16b41146d77)
 
 # GraphQL
 
