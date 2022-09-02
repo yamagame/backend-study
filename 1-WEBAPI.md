@@ -188,61 +188,9 @@ https://user:password@www.example.com:123/forum/questions/?tag=networking&order=
 
 - [OpenAPI](https://www.openapis.org/)
 - [Google Cloud - Cloud Endpoints | OpenAPI の概要](https://cloud.google.com/endpoints/docs/openapi/openapi-overview?hl=ja)
-
-```yaml
-swagger: "2.0"
-info:
-  title: Airport Codes
-  description: Get the name of an airport from its three-letter IATA code.
-  version: 1.0.0
-host: YOUR-PROJECT-ID.appspot.com
-schemes:
-  - "http"
-  - "https"
-paths:
-  /airportName:
-    get:
-      description: "Get the airport name for a given IATA code."
-      operationId: "airportName"
-      parameters:
-        -
-          name: iataCode
-          in: query
-          required: true
-          type: string
-      responses:
-        200:
-          description: "Success."
-          schema:
-            type: string
-        400:
-          description: "The IATA code is invalid or missing."
-```
-
 - [Google Cloud - Cloud Endpoints | Cloud Endpoints for OpenAPI](https://cloud.google.com/endpoints/docs/openapi?hl=ja)
 
-### サーバーサイドのコード例
-
-```typescript
-import express, { Request, Response } from "express";
-
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.get("/hello", (req: Request, res: Response) => {
-  res.send({
-    message: "Hello World",
-  });
-});
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log(`Start example server`);
-  console.log(`http://localhost:${PORT}`);
-});
-```
+### Swagger の例
 
 ```yaml
 swagger: "2.0"
@@ -266,6 +214,29 @@ paths:
               message:
                 type: string
                 example: Hello World
+```
+
+### サーバーサイドのコード例
+
+```typescript
+import express, { Request, Response } from "express";
+
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get("/hello", (req: Request, res: Response) => {
+  res.send({
+    message: "Hello World",
+  });
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Start example server`);
+  console.log(`http://localhost:${PORT}`);
+});
 ```
 
 # WebSocket
