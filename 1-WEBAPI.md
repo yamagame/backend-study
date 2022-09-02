@@ -6,7 +6,7 @@
 
 - WebAPI
 
-  インターネントにあるサービスを利用するためのAPI
+  インターネントにあるサービスを利用するためのAPI。
 
 ## Webアプリケーションの構成
 
@@ -16,9 +16,15 @@ graph LR;
   Server --> Client
 ```
 
+### Chrome Developer Tools
+
+- [Open Chrome DevTools](https://developer.chrome.com/docs/devtools/open/)
+- [Network features reference](https://developer.chrome.com/docs/devtools/network/reference/)
+- 参考：[Chrome DevTools を使用して低コントラストのテキストを検出して修正する](https://developers.google.com/codelabs/devtools-cvd)
+
 ## ネットワーク技術
 
-### OSI参照モデル
+### [OSI参照モデル](https://ja.wikipedia.org/wiki/OSI%E5%8F%82%E7%85%A7%E3%83%A2%E3%83%87%E3%83%AB)
 
 | レイヤ | 名称                 | 概要                                   |
 | ------ | -------------------- | -------------------------------------- |
@@ -30,14 +36,14 @@ graph LR;
 | 2      | データリンク層       | 通信機器の接続を定義                   |
 | 1      | 物理層               | 物理的な接続、電波、電気、ケーブルなど |
 
-### インターネット プロトコル スイート
+### [インターネット プロトコル スイート](https://ja.wikipedia.org/wiki/%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%8D%E3%83%83%E3%83%88%E3%83%BB%E3%83%97%E3%83%AD%E3%83%88%E3%82%B3%E3%83%AB%E3%83%BB%E3%82%B9%E3%82%A4%E3%83%BC%E3%83%88)
 
-| レイヤ | 名称               | 概要                                                             |
-| ------ | ------------------ | ---------------------------------------------------------------- |
-| 4      | アプリケーション層 | DNS、TLS/SSL、HTTP、POP3、SMTP、SNMP、SSH、TELNET、FTP、IMAPなど |
-| 3      | トランスポート層   | TCP、UDP、SCTPなど                                               |
-| 2      | インターネット層   | IPv4、IPv6、ARP                                                  |
-| 1      | リンク層           | イーサネット、Wi-Fi、PPP、FDDIなど                               |
+| レイヤ | 名称               | 概要                                                                         |
+| ------ | ------------------ | ---------------------------------------------------------------------------- |
+| 4      | アプリケーション層 | DNS、TLS/SSL、HTTP、POP3、SMTP、IMAP、SNMP、SSH、TELNET、FTPなど             |
+| 3      | トランスポート層   | TCP、UDP、[SCTP](https://qiita.com/urakarin/items/dd1cb2f25e2c80178e5d)など  |
+| 2      | インターネット層   | IPv4、IPv6、[ARP](https://ja.wikipedia.org/wiki/Address_Resolution_Protocol) |
+| 1      | リンク層           | イーサネット、Wi-Fi、PPP、[FDDI](https://ja.wikipedia.org/wiki/Fiber_distributed_data_interface)など                                           |
 
 ### IP(インターネットプロトコル)
 
@@ -68,14 +74,13 @@ graph LR;
 
 ### ネットワークエンジニアの資格
 
-- [CCNA](https://www.cisco.com/c/dam/global/ja_jp/training-events/training-certifications/exam-topics/200-301-CCNA.pdf)
-- [CCNP](https://www.cisco.com/c/dam/global/ja_jp/training-events/training-certifications/exam-topics/350-401-ENCOR.pdf)
+- [CCNA](https://www.cisco.com/c/dam/global/ja_jp/training-events/training-certifications/exam-topics/200-301-CCNA.pdf) / [CCNP](https://www.cisco.com/c/dam/global/ja_jp/training-events/training-certifications/exam-topics/350-401-ENCOR.pdf)
 
 - [パケットトレーサー](https://www.netacad.com/ja/courses/packet-tracer)
 
-## 主なデータ形式
+## 使用する主なデータ形式
 
-- JSON
+- [JSON](https://ja.wikipedia.org/wiki/JavaScript_Object_Notation)
 
   ```json
   {
@@ -108,11 +113,6 @@ graph LR;
   - [DTDとはいったい何でしょうか？](https://www.homepage-tukurikata.com/html/dtd.html)
 
 # HTTP
-
-## Developer Tools
-
-- [Chrome DevTools を使用して低コントラストのテキストを検出して修正する](https://developers.google.com/codelabs/devtools-cvd)
-- [Network features reference](https://developer.chrome.com/docs/devtools/network/reference/)
 
 ## クライアントAPI
 
@@ -171,7 +171,7 @@ https://user:password@www.example.com:123/forum/questions/?tag=networking&order=
 - [Wikipedia HTTP/3](https://ja.wikipedia.org/wiki/HTTP/3)
 - [HTTP/2のTCPレベルのHoLブロッキングとQUIC](https://dorapon2000.hatenablog.com/entry/2021/04/11/180740)
 
-# OpenAPI
+# REST
 ## サンプルREST API
 
 - [郵便番号検索API](http://zipcloud.ibsnet.co.jp/doc/api)
