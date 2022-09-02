@@ -139,6 +139,17 @@ https://user:password@www.example.com:123/forum/questions/?tag=networking&order=
 
 - [http/httpsスキームの構文例](https://ja.wikipedia.org/wiki/Uniform_Resource_Identifier#http/https%E3%82%B9%E3%82%AD%E3%83%BC%E3%83%A0%E3%81%AE%E6%A7%8B%E6%96%87%E4%BE%8B)
 
+## HTTP リクエストメソッド
+
+[HTTP リクエストメソッド](https://developer.mozilla.org/ja/docs/Web/HTTP/Methods)
+
+- GET
+- HEAD
+- POST
+- PUT
+- DELETE
+- OPTIONS
+
 ## HTTP レスポンスステータスコード
 
 1. [情報レスポンス (100–199)](https://developer.mozilla.org/ja/docs/Web/HTTP/Status#%E6%83%85%E5%A0%B1%E3%83%AC%E3%82%B9%E3%83%9D%E3%83%B3%E3%82%B9)
