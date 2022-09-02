@@ -177,7 +177,7 @@ https://user:password@www.example.com:123/forum/questions/?tag=networking&order=
 - [郵便番号検索API](http://zipcloud.ibsnet.co.jp/doc/api)
 
   ```bash
-  curl https://zipcloud.ibsnet.co.jp/api/search?zipcode=7830060
+  curl "https://zipcloud.ibsnet.co.jp/api/search?zipcode=7830060"
   ```
 
   参考：[郵便局：郵便番号データ](https://www.post.japanpost.jp/zipcode/dl/readme.html)
