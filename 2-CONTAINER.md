@@ -5,13 +5,13 @@
 
 仮想的な１台のコンピュータのこと
 
-物理的な１台のコンピュータで仮想的な複数台のコンピュータを動かせる。コンテナは隔離されていてメモリやファイル、ポートが別扱いになる。そのため、ファイルを変更したりポートを使用しても他のコンテナに影響しない。
+物理的な１台のコンピュータで仮想的な複数台のコンピュータを動かせる。コンテナは隔離されていて、メモリやファイル、ポートが別扱いになるため、変更が他のコンテナに影響しない。
 
 - 参考：[コンテナ技術と仮想マシンの違いとは？](https://psc-smartwork.com/topics/2021/08/162.html#:~:text=%E3%82%B3%E3%83%B3%E3%83%86%E3%83%8A%E3%81%A8%E3%81%AF%E3%80%81%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B1%E3%83%BC%E3%82%B7%E3%83%A7%E3%83%B3%E3%81%A8,%E3%81%AA%E7%92%B0%E5%A2%83%E3%82%92%E4%BD%9C%E3%82%8A%E5%87%BA%E3%81%97%E3%81%BE%E3%81%99%E3%80%82)
 
 # Docker
 
-Docker はコンテナ技術のデファクトスタンダード(事実上の標準)。
+Docker はコンテナ技術の[デファクトスタンダード](https://ja.wikipedia.org/wiki/%E3%83%87%E3%83%95%E3%82%A1%E3%82%AF%E3%83%88%E3%82%B9%E3%82%BF%E3%83%B3%E3%83%80%E3%83%BC%E3%83%89)。
 
 - [docker](https://www.docker.com/)
 - [docker docs](https://docs.docker.com/)
@@ -439,7 +439,7 @@ GitLab の [Runner executor](https://docs.gitlab.com/runner/executors/index.html
 
 # Docker Compose
 
-[Docker Compose](https://docs.docker.com/compose/) は複数のコンテナを束ねて管理するツールである。下記は Docker Compose の YAML ファイルの例。
+[Docker Compose](https://docs.docker.com/compose/) は複数のコンテナを束ねて管理するツール。下記は Docker Compose の YAML ファイルの例。
 
 ```yaml
 services:
