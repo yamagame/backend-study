@@ -1,0 +1,22 @@
+{
+  "name": "3-BLOCKCHAIN",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start:genrsa": "ts-node BlockChain/generate-rsa-keys.ts",
+    "start:genec": "ts-node BlockChain/generate-ec-keys.ts",
+    "start:encrypt": "ts-node BlockChain/encrypt.ts",
+    "start:decrypt": "ts-node BlockChain/decrypt.ts",
+    "start:sign": "ts-node BlockChain/sign-deal-ec.ts",
+    "test:block": "ts-node BlockChain/generate-block.ts",
+    "test:transaction": "ts-node BlockChain/transaction-sample.ts"
+  },
+  "dependencies": {
+    "@types/node": "^18.7.14",
+    "typescript": "^4.8.2"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.1"
+  }
+}
