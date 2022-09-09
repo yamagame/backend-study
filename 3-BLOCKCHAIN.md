@@ -361,6 +361,16 @@ BitCoin Address: 1GD89BSmF4dLthZzcvgLdF61UTjecRkyoH
 
 ## 公開鍵暗号の種類
 
+[あなたの「公開鍵暗号」はPKE? それともPKC?](https://blog.cybozu.io/entry/2021/12/28/080000)
+
+- PKE - Public Key Encryption
+  
+  秘密にしたいデータを相手に渡す技術
+  
+- PKC - Public Key Cryptography
+  
+  暗号化技術全般のこと。本人確認のための署名を扱う技術を含む。
+
 ## 楕円曲線DSA (ECDSA)
 
 [ビットコインでは楕円曲線暗号secp256k1が使われている](https://pebble8888.hatenablog.com/entry/2017/10/08/113201)
