@@ -87,6 +87,8 @@ sequenceDiagram
 
 - [ビットコイン論文からさぐる ブロックチェーンのヒント](https://www.ogis-ri.co.jp/otc/hiroba/technical/bitcoinpaper/part1.html)
 
+- [Bitcoin Core integration/staging tree](https://github.com/bitcoin/bitcoin)
+
 ## ハッシュ
 
 ### 簡単なハッシュ
@@ -119,7 +121,7 @@ console.log(hash); // => 'a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277
 
 ブロックは「ひとつ前のブロックのハッシュ値」と「取引情報」、「ナンス」と呼ばれる32ビットの整数値を含む。
 
-![bock-chain](./3-BLOCKCHAIN/images/block-chain.drawio.svg)
+![block-chain](./3-BLOCKCHAIN/images/block-chain.drawio.svg)
 
 ```typescript
 // ブロックのイメージ
@@ -243,16 +245,129 @@ const signature = sign.sign(pri);
 console.log(signature.toString("hex"));
 ```
 
-参考：[ビットコイン ウォレットをJavascriptで作ってみよう](https://note.com/strictlyes/n/n5432a4c5bd36)
-参考：[ビットコインおけるトランザクションスクリプトの仕組みとその種類](https://zoom-blc.com/transaction-script)
+## ビットコインアドレス
+
+```mermaid
+graph LR;
+  プライベートキー -->|ゴニョゴニョ| パブリックキー -->|ゴニョゴニョ| ビットコインアドレス
+```
+
+- [ビットコイン ウォレットをJavascriptで作ってみよう](https://note.com/strictlyes/n/n5432a4c5bd36)
+
+ビットコインアドレスの例
+
+```bash
+1GD89BSmF4dLthZzcvgLdF61UTjecRkyoH
+```
+
+次のパブリックキーから生成される
+
+```text
+04f2dfa3d70e4f511871bd9e6eb6aff9cd8e158597405a0a7cfe7a50909e1643c004df7c909862ed8b7cf7575b5c73d9ccddfdf2b55aed52bb2a7380573bec8d80
+```
+
+パブリックキーは次のプライベートキーから生成される。
+
+```text
+1210b49b9e62aa4a3b586f581c4bb065ccbbc4e0bfb57599aa23e04738694752
+```
+
+プライベートキーは単なるランダムに生成された巨大な整数だが、ビットコインで使用するためには以下の値より小さい値でなければいけない。
+
+```text
+FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364140
+```
+
+サンプルコード
+
+```typescript
+import secureRandom from "secure-random";
+import base58 from "bs58";
+import { ec } from "elliptic";
+
+const ecdsa = new ec("secp256k1");
+const sha256 = require("js-sha256");
+const ripemd160 = require("ripemd160");
+
+const max = Buffer.from("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364140", "hex");
+
+let isInvalid = true;
+let privateKey;
+
+while (isInvalid) {
+  privateKey = secureRandom.randomBuffer(32);
+  if (Buffer.compare(max, privateKey) === 1) {
+    isInvalid = false;
+  }
+}
+
+if (privateKey) {
+  console.log("Private key: ", privateKey.toString("hex"));
+
+  const keys = ecdsa.keyFromPrivate(privateKey);
+  const publicKey = keys.getPublic("hex");
+  console.log("Public key: ", publicKey);
+
+  let hash = sha256(Buffer.from(publicKey, "hex"));
+  let publicKeyHash = new ripemd160().update(Buffer.from(hash, "hex")).digest();
+
+  const step1 = Buffer.from("00" + publicKeyHash.toString("hex"), "hex");
+  const step2 = sha256(step1);
+  const step3 = sha256(Buffer.from(step2, "hex"));
+  const checksum = step3.substring(0, 8);
+  const step4 = step1.toString("hex") + checksum;
+  const address = base58.encode(Buffer.from(step4, "hex"));
+
+  console.log("BitCoin Address: " + address);
+}
+```
+
+実行例
+
+```bash
+$ npx ts-node BlockChain/gen-bitcoin-address.ts 
+Private key: 1210b49b9e62aa4a3b586f581c4bb065ccbbc4e0bfb57599aa23e04738694752
+Public key: 04f2dfa3d70e4f511871bd9e6eb6aff9cd8e158597405a0a7cfe7a50909e1643c004df7c909862ed8b7cf7575b5c73d9ccddfdf2b55aed52bb2a7380573bec8d80
+BitCoin Address: 1GD89BSmF4dLthZzcvgLdF61UTjecRkyoH
+```
+
+次のサイトで確認
+
+- [TP's Go Bitcoin Tests - Addresses](http://gobittest.appspot.com/Address)
+
+ビットコインアドレスの生成手順
+
+1. 公開鍵を SHA-256 にかけ、RIPEMD-160 して publicKeyHash を生成する
+2. publicKeyHash の先頭に 00 を付加
+3. 1 を SHA-256 にかける
+4. さらに SHA-256 で16進数にして
+5. 3 の先頭8文字を checksum として切り取る
+6. checksum を1の最後尾に連結
+7. 5 をBase 58でエンコード
+
+- [ビットコインおけるトランザクションスクリプトの仕組みとその種類](https://zoom-blc.com/transaction-script)
+
+- [ブロックチェーンの3つの課題とは？〜スケーラビリティ、ファイナリティ、セキュリティ〜](https://trade-log.io/column/575)
 
 # 公開鍵暗号方式
+
+## 基本
+
+秘密鍵(プライベートキー）と公開鍵（パブリックキー)と呼ばれる整数値がある。[公開鍵暗号方式](https://ja.wikipedia.org/wiki/%E5%85%AC%E9%96%8B%E9%8D%B5%E6%9A%97%E5%8F%B7)の特徴は以下の通り。
+
+- 公開鍵は秘密鍵から生成できる。
+- 秘密鍵で暗号化したデータは、公開鍵でしか戻せない。
+- 公開鍵で暗号化したデータは、秘密鍵でしか戻せない。
 
 ## 公開鍵暗号の種類
 
 ## 楕円曲線DSA (ECDSA)
 
 [ビットコインでは楕円曲線暗号secp256k1が使われている](https://pebble8888.hatenablog.com/entry/2017/10/08/113201)
+
+次のような楕円曲線を利用した「加算」演算を定義してパブリックキーを生成する。
+
+![楕円曲線](./3-BLOCKCHAIN/images/elliptic-curve.png)
 
 鍵の生成サンプルコード。
 
@@ -262,12 +377,12 @@ import crypto from "crypto";
 
 const { privateKey, publicKey } = crypto.generateKeyPairSync("ec", {
   namedCurve: "secp256k1",
-  publicKeyEncoding: {
-    type: "spki",
-    format: "der",
-  },
   privateKeyEncoding: {
     type: "pkcs8",
+    format: "der",
+  },
+  publicKeyEncoding: {
+    type: "spki",
     format: "der",
   },
 });
@@ -279,6 +394,16 @@ const keys = {
 
 console.log(JSON.stringify(keys, null, "  "));
 ```
+
+## 署名
+
+![signature](./3-BLOCKCHAIN/images/signature.drawio.svg)
+
+データをプライベートキーで暗号化して、データとともに署名されたデータと公開鍵を相手に渡す。
+
+
+
+相手は、渡された署名を公開鍵で復号化してデータと一致することを確認する。データが一致すれば、プライベートキーの持ち主が暗号化したことが照明される。
 
 プライベートキーで署名するサンプルコード。
 
@@ -340,13 +465,15 @@ $ npx ts-node BlockChain/ec-verify.ts "Hello World" 3045022100d5f989426bedc581bd
 true
 ```
 
+- [ASN.1](https://poruruba.github.io/utilities/)
+
 # Ethereum
 
 - [Ethereumとは何か？](https://book.ethereum-jp.net/what_is_ethereum)
 
   「ブロックチェーン」と呼ばれる技術をベースに、特別な管理者のいないP2Pシステム上で様々なサービスを実現するための基盤
 
-## ハッシュ関数
+<!-- ## ハッシュ関数
 
 イーサリアムでは「[Keccak-256](https://github.com/ethereum/eth-hash)」を使用する。
 
@@ -354,4 +481,4 @@ true
 
 ブートストラップノード
 
-[Ethereumのノード探索の仕組みとエクリプス攻撃とその対策](https://techmedia-think.hatenablog.com/entry/2020/07/17/205522)
+[Ethereumのノード探索の仕組みとエクリプス攻撃とその対策](https://techmedia-think.hatenablog.com/entry/2020/07/17/205522) -->
