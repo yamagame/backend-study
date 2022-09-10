@@ -168,137 +168,7 @@ $ docker run --rm hello
 Hello World Docker!!
 ```
 
-## ホストとコンテナ
-
-### PORT
-
-コンテナのポートをホストの別のポートで公開できる。
-
-![host-container](./2-CONTAINER/images/host-container.drawio.svg)
-
-```bash
-$ docker run --rm -p 3000:8080 gcr.io/google-samples/hello-app:1.0
-```
-
-### Reactアプリをビルドして動かす
-
-2-CONTAINER/hello-react-app に移動して以下のコマンドを実行する。
-
-```bash
-$ docker build --tag hello-react-app .
-$ docker run --rm -p 3000:8080 hello-react-app
-```
-
-ブラウザで [http://localhost:3000](http://localhost:3000) を開く。
-
-イメージを削除して後片付けする。
-
-```bash
-$ docker rmi hello-react-app
-```
-
-## コンテナ間で通信する
-
-Docker ネットワークを作成する。
-
-```bash
-$ docker network create my-network
-$ docker network ls               
-NETWORK ID     NAME                      DRIVER    SCOPE
-c80efeec6468   bridge                    bridge    local
-4891d209e02a   host                      host      local
-da29701a16b0   my-network                bridge    local
-```
-
-Docker ネットワークの詳細を調べる。
-
-```bash
-$ docker network inspect my-network
-[
-    {
-        "Name": "my-network",
-              :
-```
-
-Docker ネットワークを指定してコンテナを起動する。
-
-```bash
-$ docker run --rm --name react-app --network my-network hello-react-app
-```
-
-別のターミナルで curlimages/curl を起動する。
-
-```bash
-$ docker run -it --rm --name shell --network my-network curlimages/curl /bin/sh
-```
-
-hello-react-app を curl してみる。ネットワークを作成すると Docker 内 DNS が機能するため、react-app で接続できる。
-
-```bash
-/ $ curl http://react-app:8080/hello.txt
-Hello World from Hello React App
-```
-
-## ボリューム
-
-Docker には３種類のボリュームがある。
-
-参考：[ボリュームの利用](https://matsuand.github.io/docs.docker.jp.onthefly/storage/volumes/)
-
-### 1. 名前付きボリューム / 匿名ボリューム
-
-Docker 管理下のストレージ領域。
-ボリュームに名前をつけるとコンテナを終了しても消えない。匿名ボリュームはコンテナの削除と共に消える。
-以下のコマンドでは my-storage という名前のボリュームを /work ディレクトリにマウントしている。
-
-```bash
-$ docker run -it --rm -v my-storage:/work ubuntu
-```
-
-コンテナ内で以下のコマンドで /work ディレクトリに hello.txt を作成する。
-
-```text
-/# echo "Hello World" >> /work/hello.txt
-```
-
-別のターミナルから以下のコマンドを実行すると作成した hello.txt の中身を見ることができる。
-
-```bash
-$ docker run --rm -v my-storage:/work ubuntu cat /work/hello.txt
-Hello World
-```
-
-作成したボリュームを確認するには以下のコマンドを実行する。
-
-```bash
-$ docker volume ls
-DRIVER    VOLUME NAME
-local     my-storage
-```
-
-手動でボリュームを作成する場合は以下のコマンドを用いる。
-
-```bash
-$ docker volume create my-storage
-```
-
-### 2. バインドマウント
-
-ホストのディレクトリをコンテナ内のディレクトリと共有する。以下のコマンドではホストのカレントディレクトリをコンテナの /work にマウントしている。
-
-```bash
-$ docker run -it --rm -v ${PWD}:/work ubuntu /bin/bash
-```
-
-### 3. tmpfs
-
-メモリ内に作られるストレージ。コンテナが終了すると消える。
-
-```bash
-$ docker run -it --rm --tmpfs /my-tmp ubuntu /bin/bash
-```
-
-## ENTRYPOINT と CMD
+### ENTRYPOINT と CMD
 
 ENTORYPOINT は必ず実行し、CMD はオプションで未指定ならオプションとして使用される。
 
@@ -380,16 +250,147 @@ hello.txt
 
 参考：[Dockerfile reference](https://docs.docker.com/engine/reference/builder/)
 
-#　CI/CD
+## ホストとコンテナ
+
+### PORT
+
+コンテナのポートをホストの別のポートで公開できる。
+
+![host-container](./2-CONTAINER/images/host-container.drawio.svg)
+
+```bash
+$ docker run --rm -p 3000:8080 gcr.io/google-samples/hello-app:1.0
+```
+
+### Reactアプリをビルドして動かす
+
+2-CONTAINER/hello-react-app に移動して以下のコマンドを実行する。
+
+```bash
+$ docker build --tag hello-react-app .
+$ docker run --rm -p 3000:8080 hello-react-app
+```
+
+ブラウザで [http://localhost:3000](http://localhost:3000) を開く。
+
+イメージを削除して後片付けする。
+
+```bash
+$ docker rmi hello-react-app
+```
+
+## コンテナ間で通信する
+
+Docker ネットワークを作成する。
+
+```bash
+$ docker network create my-network
+$ docker network ls               
+NETWORK ID     NAME                      DRIVER    SCOPE
+c80efeec6468   bridge                    bridge    local
+4891d209e02a   host                      host      local
+da29701a16b0   my-network                bridge    local
+```
+
+Docker ネットワークの詳細を調べる。
+
+```bash
+$ docker network inspect my-network
+[
+    {
+        "Name": "my-network",
+              :
+```
+
+Docker ネットワークを指定してコンテナを起動する。
+
+```bash
+$ docker run --rm --name react-app --network my-network hello-react-app
+```
+
+別のターミナルで curlimages/curl を起動する。
+
+```bash
+$ docker run -it --rm --name shell --network my-network curlimages/curl /bin/sh
+```
+
+hello-react-app を curl してみる。ネットワークを作成すると Docker 内 [DNS](https://ja.wikipedia.org/wiki/Domain_Name_System) が機能するため、ホスト名 react-app で IPアドレスが解決でき接続できる。
+
+```bash
+/ $ curl http://react-app:8080/hello.txt
+Hello World from Hello React App
+```
+
+## ボリューム
+
+ボリュームとはDocker 管理下のストレージ領域のこと。Docker には３種類のボリュームがある。
+
+参考：[ボリュームの利用](https://matsuand.github.io/docs.docker.jp.onthefly/storage/volumes/)
+
+### 1. 名前付きボリューム / 匿名ボリューム
+
+通常、コンテナ内に保存されたファイルは、コンテナの終了とともに消える匿名ボリュームとなる。名前をつけたボリュームはコンテナが終了しても消えない。
+以下のコマンドでは my-storage という名前のボリュームを /work ディレクトリにマウントしている。
+
+```bash
+$ docker run -it --rm -v my-storage:/work ubuntu
+```
+
+コンテナ内で以下のコマンドで /work ディレクトリに hello.txt を作成する。
+
+```text
+/# echo "Hello World" >> /work/hello.txt
+```
+
+別のターミナルから以下のコマンドを実行すると作成した hello.txt の中身を見ることができる。
+
+```bash
+$ docker run --rm -v my-storage:/work ubuntu cat /work/hello.txt
+Hello World
+```
+
+作成したボリュームを確認するには以下のコマンドを実行する。
+
+```bash
+$ docker volume ls
+DRIVER    VOLUME NAME
+local     my-storage
+```
+
+個別にボリュームを作成する場合は以下のコマンドを用いる。
+
+```bash
+$ docker volume create my-storage
+```
+
+### 2. バインドマウント
+
+ホストのディレクトリをコンテナ内のディレクトリと共有する。以下のコマンドではホストのカレントディレクトリをコンテナの /work にマウントしている。
+
+```bash
+$ docker run -it --rm -v ${PWD}:/work ubuntu /bin/bash
+```
+
+### 3. tmpfs
+
+メモリ内に作られるストレージ。コンテナが終了すると消える。
+
+```bash
+$ docker run -it --rm --tmpfs /my-tmp ubuntu /bin/bash
+```
+
+# CI/CD
+
+- [CI/CDとは？CI/CDを使うメリットや実践のポイントを解説！](https://hnavi.co.jp/knowledge/blog/ci-cd/)
 
 ## GitLab vs GitHub
 
 - [GitLab](https://about.gitlab.com/)
 - [GitLab vs GitHub](https://about.gitlab.com/devops-tools/github-vs-gitlab/)
 
-## CI/CD pipelines
+## パイプライン
 
-パイプラインはソースをリモートリポジトリにプッシュしたあと、指定したジョブが実行される。
+ソースをリモートリポジトリにプッシュしたあと、指定したパイプライン化されたジョブが実行される。
 主に、ビルド、テスト、デプロイを行う。
 
 GitLab では .gitlab-ci.yml ファイルをリポジトリのルートに配置するとパイプラインが走る。
@@ -633,7 +634,7 @@ $ minikube delete
 
 - [サービス](https://kubernetes.io/ja/docs/tutorials/services/source-ip/)
 
-  Kubernetesクラスター内で実行されているアプリケーションはサービスを経由して、他のアプリケーションや外の世界との発見や通信を行う。
+  Kubernetesクラスター内で実行されているアプリケーションはサービスを経由して、他のアプリケーションや外の世界との通信を行う。
 
 - [Ingress](https://kubernetes.io/ja/docs/concepts/services-networking/ingress/)
 
