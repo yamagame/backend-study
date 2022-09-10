@@ -177,7 +177,7 @@ Hello World Docker!!
 ![host-container](./2-CONTAINER/images/host-container.drawio.svg)
 
 ```bash
-$ docker --rm -p 3000:8080 simple-server
+$ docker run --rm -p 3000:8080 gcr.io/google-samples/hello-app:1.0
 ```
 
 ### Reactアプリをビルドして動かす
