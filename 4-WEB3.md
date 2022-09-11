@@ -10,3 +10,4 @@
 - [メタバースとは何か？注目される背景やビジネスにもたらす効果を解説](https://www.nice2meet.us/metaverse)
   - [Meta](https://about.facebook.com/ja/meta/)
   - [モスバーガー、メタバース上の月面空間にバーチャル店舗オープンへ](https://coinpost.jp/?p=384382)
+- [私にはこんな風に見えるWeb3相関図](https://pbs.twimg.com/media/FYa3wFOakAIZUn-?format=jpg&name=large)
