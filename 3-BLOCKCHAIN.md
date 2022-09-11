@@ -89,11 +89,13 @@ sequenceDiagram
 
 - [Bitcoin Core integration/staging tree](https://github.com/bitcoin/bitcoin)
 
+- [Blockchain.com](https://www.blockchain.com/explorer)
+
 ## ハッシュ
 
 ### 簡単なハッシュ
 
-単純な加算の例。データの並びが変わっても計算結果が変わらないという問題がある。
+単純な加算を使ったいい加減なハッシュの例。データの並びが変わっても計算結果が変わらないという問題がある。
 
 ```typescript
 import {TextEncoder} from "util";
@@ -123,8 +125,10 @@ console.log(hash); // => 'a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277
 
 ![block-chain](./3-BLOCKCHAIN/images/block-chain.drawio.svg)
 
+実際の[ブロックの例](https://www.blockchain.com/btc/block/753538)。
+
 ```typescript
-// ブロックのイメージ
+// ブロックのイメージ：実際のビットコインとは異なります。
 import crypto from "crypto";
 import { TextEncoder } from "util";
 
@@ -209,6 +213,7 @@ nance: 7687765275567041
 取引データのハッシュ値を公開鍵で暗号化したデータ(署名)をブロックに含める。
 
 ```typescript
+// サンプルコード：実際のビットコインとは異なります。
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
@@ -366,7 +371,7 @@ BitCoin Address: 1GD89BSmF4dLthZzcvgLdF61UTjecRkyoH
 - PKE - Public Key Encryption
   
   秘密にしたいデータを相手に渡す技術
-  
+
 - PKC - Public Key Cryptography
   
   暗号化技術全般のこと。本人確認のための署名を扱う技術を含む。
@@ -479,16 +484,92 @@ true
 
 # Ethereum
 
+- [イーサリアムへようこそ](https://ethereum.org/ja/)
+
 - [Ethereumとは何か？](https://book.ethereum-jp.net/what_is_ethereum)
 
-  「ブロックチェーン」と呼ばれる技術をベースに、特別な管理者のいないP2Pシステム上で様々なサービスを実現するための基盤
+  「ブロックチェーン」と呼ばれる技術をベースに、特別な管理者のいないP2Pシステム上で様々なサービスを実現するための基盤、プラットフォーム。経済に特化したビットコインとは性質が全く異なる。
 
-<!-- ## ハッシュ関数
+- ワールドコンピュータ
 
-イーサリアムでは「[Keccak-256](https://github.com/ethereum/eth-hash)」を使用する。
+  [イーサリアムとはワールドコンピューターである](https://bittimes.net/news/512.html)
 
-[【保存版】Ethereum nodeの３類型の違いを理解しよう！（保持データについて）](https://note.com/standenglish/n/na5006f0b3fd4)
+  Ethereum は特定の管理者がいないワールドコンピュータである。世界中のコンピュータを繋げ、一つのコンピュータとして動作する。
 
-ブートストラップノード
+- DApps
 
-[Ethereumのノード探索の仕組みとエクリプス攻撃とその対策](https://techmedia-think.hatenablog.com/entry/2020/07/17/205522) -->
+  ワールドコンピュータで動作するアプリのこと。Ethereum上で任意のアプリを動作させることができる。
+
+  - [イーサリアム搭載のツールとサービス](https://ethereum.org/ja/dapps/)
+
+- Gas
+
+  ワールドコンピュータでプログラムを動かすために必要な手数料のこと。ネットワークの混雑度合いによって手数料は変動する。
+
+  - [Ethereum Gas Charts](https://ethereumprice.org/gas/)
+
+- Wei
+  
+  Gasの単位。1ETHは1wei x 10 の 18乗。
+
+  - [ETH GAS STATION](https://ethgasstation.info/)
+
+- ブロックチェーン
+
+  Ethereum で管理しているデータはブロックチェーンで管理されているため、特定の企業や国が自分の都合に合わせて改ざんすることができない。
+
+- スマートコントラクト
+
+  ブロックチェーンに記録する契約書のこと。Ethereum の契約書はワールドコンピュータで動作するプログラミングされたコード。
+
+- ノード
+
+  [【保存版】Ethereum nodeの３類型の違いを理解しよう！（保持データについて）](https://note.com/standenglish/n/na5006f0b3fd4)
+
+  - ライトノード
+
+    ブロックヘッダのみ持っているノード。
+
+  - フルノード
+
+    全取引データを持っているノードのこと。
+
+  - アーカイブノード
+
+    全取引データに加えステートの情報を持っているノードのこと。
+
+- ハッシュ関数
+
+  イーサリアムでは「[Keccak-256](https://github.com/ethereum/eth-hash)」を使用する。
+
+- ブートストラップノード
+
+  [Ethereumのノード探索の仕組みとエクリプス攻撃とその対策](https://techmedia-think.hatenablog.com/entry/2020/07/17/205522)
+
+  クライアントやノードがP2P接続する前に問い合わせするサーバーのこと。ブートストラップノードはクラウドで動作しており、接続さきはコードに埋め込まれている。
+
+# ブロックチェーンの課題
+
+  [ブロックチェーンの3つの課題とは？〜スケーラビリティ、ファイナリティ、セキュリティ〜](https://trade-log.io/column/575)
+
+- スケーラビリティ
+  
+  遅い、重い、大きなデータを扱えない
+
+  - 一般的なクレカ：数万トランザクション/秒
+  - ビットコイン：7トランザクション/秒
+  - イーサリアム：15〜20トランザクション/秒
+  - プライベートブロックチェーン：数千トランザクション/秒
+
+  [オンチェーンとオフチェーンを理解しよう](https://pol.techtec.world/blockchain-usecase/kyber-network/onchain-offchain)
+
+- ファイナリティ
+
+  取引内容が覆る可能性がゼロではない。
+
+  [仮想通貨のハードフォークとは？仕組みとおきた時の値動きを徹底解説](https://www.caica.jp/media/crypto/cryptocurrency-hard-fork/)
+
+- セキュリティ
+  
+  - マシンパワー次第では改竄できる[51%問題](https://bitcoin.dmm.com/glossary/51_percent_attack)がある。
+  - 秘密鍵の流出問題、一度流出すると取り戻せない。
