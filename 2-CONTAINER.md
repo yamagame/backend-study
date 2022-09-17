@@ -189,14 +189,14 @@ $ docker image build -t hello-echo .
 引数がなければ「Hello World」
 
 ```bash
-$ docker container run hello-echo
+$ docker run --rm hello-echo
 Hello World
 ```
 
 引数があれば「Test World」
 
 ```bash
-$ docker container run hello-echo "Test World"
+$ docker run --rm hello-echo "Test World"
 Test World
 ```
 
@@ -242,6 +242,18 @@ $ docker build --tag add-copy-sample .
 ```
 
 ビルドしたイメージに hello.txt が含まれているか、次のコマンドで確かめる。
+
+```bash
+$ docker run -it --rm add-copy-sample
+/# cd /work/sample
+/# ls
+hello.txt
+/# cat hello.txt
+Hello World!
+/# exit
+```
+
+次のコマンドで確かめることもできる。
 
 ```bash
 $ docker run -it --rm add-copy-sample ls /work/sample
@@ -305,7 +317,7 @@ $ docker network inspect my-network
 Docker ネットワークを指定してコンテナを起動する。
 
 ```bash
-$ docker run --rm --name react-app --network my-network hello-react-app
+$ docker run --rm --name react-app -p 3000:8080 --network my-network hello-react-app
 ```
 
 別のターミナルで curlimages/curl を起動する。
@@ -565,18 +577,17 @@ minikube にアプリとアクセスするためのトンネルを作成する�
 $ minikube service hello
 ```
 
-CTL+C で停止し、サービスを削除する。
+CTL+C で停止し、サービスとデプロイメントを削除する。
 
 ```bash
 $ kubectl delete service hello
-$ kubectl delete deployment hello
 ```
 
-ingress アドオンを有効化する。
+<!-- ingress アドオンを有効化する。
 
 ```bash
 $ minikube addons enable ingress
-```
+``` -->
 
 Deploymentを LoadBalancer で公開する。
 
@@ -593,6 +604,7 @@ $ minikube tunnel
 minikube を終了させる。
 
 ```bash
+$ kubectl delete deployment hello
 $ minikube stop
 $ minikube delete
 ```
@@ -775,7 +787,7 @@ hello-react-app をビルドする。
 docker build -t hello-react-app:minikube .
 ```
 
-Deployment を作成。
+deployment.yaml を作成。
 
 ```yaml
 apiVersion: apps/v1
@@ -801,7 +813,36 @@ spec:
         - containerPort: 8080
 ```
 
+Deployment を作成する。
+
+```bash
+$ kubectl apply -f deployment.yaml
+deployment.apps/hello-react-app created
+```
+
 8080 ポートで接続できるようサービスを作成する。
+以下のように service.yaml を作成する。
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-react-app
+spec:
+  selector:
+    app: hello-react-app
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: LoadBalancer
+```
+
+```bash
+$ kubectl apply -f service.yaml
+```
+
+または、
 
 ```bash
 $ kubectl expose deployment hello-react-app --type=LoadBalancer --port=8080
