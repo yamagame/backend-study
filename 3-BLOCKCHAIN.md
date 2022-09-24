@@ -105,6 +105,8 @@ const sum = array.reduce((sum, value) => sum + value, 0) & 0xff;
 console.log(`0x${sum.toString(16).toUpperCase()}`); // => 0x1C
 ```
 
+参考：[UTF8 文字コード表 1byte](https://orange-factory.com/sample/utf8/code1.html)
+
 ### 暗号化や改ざん防止のためのハッシュ
 
 データの並びや、値が少しでも違うと全く異なる結果になる。
@@ -117,6 +119,8 @@ const hash = crypto.createHash('sha256').update(Buffer.from(array)).digest('hex'
 console.log(hash); // => 'a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e'
 ```
 
+参考：[ハッシュ関数](https://ja.wikipedia.org/wiki/%E3%83%8F%E3%83%83%E3%82%B7%E3%83%A5%E9%96%A2%E6%95%B0)
+
 ビットコインでは SHA-256 を使用する。
 
 ## ブロック
@@ -124,8 +128,6 @@ console.log(hash); // => 'a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277
 ブロックは「ひとつ前のブロックのハッシュ値」と「取引情報」、「ナンス」と呼ばれる32ビットの整数値を含む。
 
 ![block-chain](./3-BLOCKCHAIN/images/block-chain.drawio.svg)
-
-実際の[ブロックの例](https://www.blockchain.com/btc/block/753538)。
 
 ```typescript
 // ブロックのイメージ：実際のビットコインとは異なります。
@@ -179,6 +181,8 @@ nance: 7687765275567041
   取引情報の正常性を確認して、ナンスをランダムに変えて先頭が0で連続するナンスを探す。
   何ビット連続する必要があるかはハッシュレートによって変わる。
 
+  [実際のブロックの例](https://www.blockchain.com/btc/block/753538)
+
 - ハッシュレート
 
   ブロックテーンネットワークが持つハッシュの1秒当たりの計算スピード。
@@ -204,7 +208,7 @@ nance: 7687765275567041
 
 ## 取引データの確かさの確認
 
-ブロックチェーンを使用するユーザーは、楕円曲線暗号(ECC)に基づいたプライベートキーとパブリックキーを持つ。
+ブロックチェーンを使用するユーザーは、[楕円曲線暗号](https://www.fujitsu.com/downloads/JP/archive/imgjp/jmag/vol50-4/paper06.pdf)(ECC)に基づいたプライベートキーとパブリックキーを持つ。
 
 - ビットコインアドレス
 
@@ -226,7 +230,7 @@ const transaction = {
   // 自分のパブリックキー
   publickKey: keys.public,
   // 取引データ(deal)のハッシュをプライベートキーで暗号化したもの。
-  dealHash: "XXXXX",
+  encryptedDealHash: "XXXXX",
   // 署名の対象データ
   deal: {
     from: "*** 自分のビットコインアドレス ***", // 誰から
@@ -257,7 +261,7 @@ graph LR;
   プライベートキー -->|ゴニョゴニョ| パブリックキー -->|ゴニョゴニョ| ビットコインアドレス
 ```
 
-- [ビットコイン ウォレットをJavascriptで作ってみよう](https://note.com/strictlyes/n/n5432a4c5bd36)
+参考：[ビットコイン ウォレットをJavascriptで作ってみよう](https://note.com/strictlyes/n/n5432a4c5bd36)
 
 ビットコインアドレスの例
 
@@ -380,7 +384,7 @@ BitCoin Address: 1GD89BSmF4dLthZzcvgLdF61UTjecRkyoH
 
 [ビットコインでは楕円曲線暗号secp256k1が使われている](https://pebble8888.hatenablog.com/entry/2017/10/08/113201)
 
-次のような楕円曲線を利用した「加算」演算を定義してパブリックキーを生成する。
+次のような[楕円曲線](https://ja.wikipedia.org/wiki/%E6%A5%95%E5%86%86%E6%9B%B2%E7%B7%9A)を利用した加算演算を定義してパブリックキーを生成する。
 
 ![楕円曲線](./3-BLOCKCHAIN/images/elliptic-curve.png)
 
@@ -409,6 +413,16 @@ const keys = {
 
 console.log(JSON.stringify(keys, null, "  "));
 ```
+
+```bash
+$ npx ts-node BlockChain/generate-ec-keys.ts 
+{
+  "private": "XXXXX",
+  "public": "XXXXX"
+}
+```
+
+参考：[ASN.1](https://poruruba.github.io/utilities/)
 
 ## 署名
 
@@ -480,8 +494,6 @@ $ npx ts-node BlockChain/ec-verify.ts "Hello World" 3045022100d5f989426bedc581bd
 true
 ```
 
-- [ASN.1](https://poruruba.github.io/utilities/)
-
 # Ethereum
 
 - [イーサリアムへようこそ](https://ethereum.org/ja/)
@@ -494,7 +506,7 @@ true
 
   [イーサリアムとはワールドコンピューターである](https://bittimes.net/news/512.html)
 
-  Ethereum は特定の管理者がいないワールドコンピュータである。世界中のコンピュータを繋げ、一つのコンピュータとして動作する。
+  Ethereum は特定の管理者がいないワールドコンピュータである。世界中のコンピュータをP2Pで繋げ、一つのコンピュータとして動作する。
 
 - DApps
 

@@ -10,7 +10,7 @@ const transaction = {
   // 自分のパブリックキー
   publickKey: keys.public,
   // 取引データ(deal)のハッシュをプライベートキーで暗号化したもの。
-  dealHash: "XXXX",
+  encryptedDealHash: "XXXX",
   // 署名の対象データ
   deal: {
     from: "自分のビットコインID", // 誰から

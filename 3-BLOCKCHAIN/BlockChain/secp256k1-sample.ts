@@ -6,21 +6,24 @@ const secp256k1 = require("secp256k1");
 
 const msg = randomBytes(32);
 
-let privKey;
-do {
-  privKey = randomBytes(32);
-} while (!secp256k1.privateKeyVerify(privKey));
+// secp256k1 の場合
+{
+  let privKey;
+  do {
+    privKey = randomBytes(32);
+  } while (!secp256k1.privateKeyVerify(privKey));
 
-const pubKey = secp256k1.publicKeyCreate(privKey);
+  const pubKey = secp256k1.publicKeyCreate(privKey);
 
-// sign the message
-const sigObj = secp256k1.ecdsaSign(msg, privKey);
+  // sign the message
+  const sigObj = secp256k1.ecdsaSign(msg, privKey);
 
-// verify the signature
-console.log(secp256k1.ecdsaVerify(sigObj.signature, msg, pubKey));
-// => true
+  // verify the signature
+  console.log(secp256k1.ecdsaVerify(sigObj.signature, msg, pubKey));
+  // => true
+}
 
-// crypto の場合
+// cryptoのsecp256k1 の場合
 import crypto from "crypto";
 
 {
